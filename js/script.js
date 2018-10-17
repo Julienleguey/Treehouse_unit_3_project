@@ -212,7 +212,7 @@ function errorEmail () {
   //error 1: the field is empty
   if (userEmail === '') {
     errorFound($('#mail'));
-    $('#mail').after('<p class="error">Please type your email address!</p>');
+    $('#mail').after('<p class="error">Please type in your email address!</p>');
   } else if (regex.test(userEmail)) {
     errorCorrected($('#mail'));
   } else {
@@ -225,11 +225,8 @@ function errorEmail () {
 //activity section: function adding an error message if no checked activity
 function errorActivities() {
   if ($totalCost === 0) {
-    errorFound($('.activities'));
-    // $('.activities legend').after('<p class="error" style="margin-top: -12px; margin-bottom: 12px">Select at least one activity!</p>');
+    event.preventDefault();
     $('.activities legend').after('<p class="error">Select at least one activity!</p>');
-  } else {
-    errorCorrected($('.activities'));
   }
 }
 
@@ -242,7 +239,7 @@ function errorCCNumber() {
     //error 1: the field is empty
     if ($('#cc-num').val() === '') {
       errorFound($('#cc-num'));
-      $('#cc-num').after('<p class="error">Please type your credit card number!</p>');
+      $('#cc-num').after('<p class="error">Please type in your credit card number!</p>');
     } else if (regex.test($('#cc-num').val())) {
       errorCorrected($('#cc-num'));
     } else {
@@ -262,7 +259,7 @@ function errorCCZipCode() {
     //error 1: the field is empty
     if ($('#zip').val() === '') {
       errorFound($('#zip'));
-      $('#zip').after('<p class="error">Please type your Zip Code!</p>');
+      $('#zip').after('<p class="error">Please type in your Zip Code!</p>');
     } else if (regex2.test($('#zip').val())) {
       errorCorrected($('#zip'));
     } else {
