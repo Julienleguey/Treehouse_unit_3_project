@@ -41,9 +41,9 @@ $('#design').on('change', function () {
   $('#color option').remove();
   // if the first t-shirt is selected
   if($('#design').val() === "js puns") {
-    // revealing the color selection for the extra credits
+    // revealing the color selection
     $('#colors-js-puns').show();
-    // picking the corresponding color options from the array they are stocked in
+    // picking the corresponding color options from the array they are stocked in and appending them to the color selection
     $($colorOptions).each(function() {
       const optionToTest = $(this).text();
       if (optionToTest.includes('JS Puns shirt only')) {
@@ -54,7 +54,7 @@ $('#design').on('change', function () {
   } else if ($('#design').val() === "heart js") {
     // revealing the color selection for the extra credits
     $('#colors-js-puns').show();
-    // picking the corresponding color options from the array they are stocked in
+    // picking the corresponding color options from the array they are stocked in and appending them to the color selection
     $($colorOptions).each(function() {
       const optionToTest = $(this).text();
       if (optionToTest.includes('JS shirt only')) {
@@ -183,15 +183,26 @@ function cleanErrorMsg() {
   $('.error').remove();
 }
 
+//in case of error in the field checked: function to prevent the button to refresh the page and new style for the field
+function errorFound(element) {
+  event.preventDefault();
+  element.addClass('error-field');
+}
+
+//in case of error removed in the field checked: function to display the normal style of the field
+function errorCorrected(element) {
+  element.removeClass('error-field');
+}
+
 //name field: function adding an error message if empty
 function errorName() {
   if ($('#name').val() === '') {
-    event.preventDefault();
-    $('#name').before('<p class="error">Please add your name!</p>');
+    errorFound($('#name'));
+    $('#name').after('<p class="error">Please add your name!</p>');
   } else {
+    errorCorrected($('#name'));
   }
 }
-
 
 //email field: function adding an error message depending of the error
 function errorEmail () {
@@ -200,22 +211,25 @@ function errorEmail () {
   const userEmail = $('#mail').val();
   //error 1: the field is empty
   if (userEmail === '') {
-    event.preventDefault();
-    $('#mail').before('<p class="error">Please type your email address!</p>');
+    errorFound($('#mail'));
+    $('#mail').after('<p class="error">Please type your email address!</p>');
   } else if (regex.test(userEmail)) {
+    errorCorrected($('#mail'));
   } else {
   //error 2: the email address is not valid
-    event.preventDefault();
-    $('#mail').before('<p class="error">Email address not valid!</p>');
+    errorFound($('#mail'));
+    $('#mail').after('<p class="error">Email address not valid!</p>');
   }
 }
 
 //activity section: function adding an error message if no checked activity
 function errorActivities() {
   if ($totalCost === 0) {
-    event.preventDefault();
-    $('.activities legend').after('<p class="error" style="margin-top: -12px; margin-bottom: 12px">Select at least one activity!</p>');
+    errorFound($('.activities'));
+    // $('.activities legend').after('<p class="error" style="margin-top: -12px; margin-bottom: 12px">Select at least one activity!</p>');
+    $('.activities legend').after('<p class="error">Select at least one activity!</p>');
   } else {
+    errorCorrected($('.activities'));
   }
 }
 
@@ -227,13 +241,14 @@ function errorCCNumber() {
     const regex = /^\d{13,16}$/;
     //error 1: the field is empty
     if ($('#cc-num').val() === '') {
-      event.preventDefault();
-      $('#cc-num').before('<p class="error">Please type your credit card number!<br><br></p>');
+      errorFound($('#cc-num'));
+      $('#cc-num').after('<p class="error">Please type your credit card number!</p>');
     } else if (regex.test($('#cc-num').val())) {
+      errorCorrected($('#cc-num'));
     } else {
     //error 2: the credit card number is not valid
-      event.preventDefault();
-      $('#cc-num').before('<p class="error">Credit card number should contains 13 to 16 digits!</p>');
+      errorFound($('#cc-num'));
+      $('#cc-num').after('<p class="error">Credit card number should contains 13 to 16 digits!</p>');
     }
   }
 }
@@ -246,13 +261,14 @@ function errorCCZipCode() {
     const regex2 = /^\d{5}$/;
     //error 1: the field is empty
     if ($('#zip').val() === '') {
-      event.preventDefault();
-      $('#zip').before('<p class="error">Please type your Zip Code!</p>');
+      errorFound($('#zip'));
+      $('#zip').after('<p class="error">Please type your Zip Code!</p>');
     } else if (regex2.test($('#zip').val())) {
+      errorCorrected($('#zip'));
     } else {
     //error 2: the zip code is not valid
-      event.preventDefault();
-      $('#zip').before('<p class="error">Zip Code should contains 5 digits!</p>');
+      errorFound($('#zip'));
+      $('#zip').after('<p class="error">Zip Code should contains 5 digits!</p>');
     }
   }
 }
@@ -265,13 +281,14 @@ function errorCCCVV() {
     const regex3 = /^\d{3}$/;
     //error 1: the field is empty
     if ($('#cvv').val() === '') {
-      event.preventDefault();
-      $('#cvv').before('<p class="error">Please type your CVV!</p>');
+      errorFound($('#cvv'));
+      $('#cvv').after('<p class="error">Please type your CVV!</p>');
     } else if (regex3.test($('#cvv').val())) {
+      errorCorrected($('#cvv'));
     } else {
       //error 2: the zip code is not valid
-      event.preventDefault();
-      $('#cvv').before('<p class="error">CVV should contains 3 digits!</p>');
+      errorFound($('#cvv'));
+      $('#cvv').after('<p class="error">CVV should contains 3 digits!</p>');
     }
   }
 }
@@ -293,18 +310,36 @@ $('button').on('click', function (event) {
 Real-time Error Messages
 ======================*/
 
+//checking the name field while the user is typing
+$('#name').on('keyup', function() {
+  //removing the previous error message of the field
+  $('#mail').next().remove('.error');
+  //looking for errors only if there is at least one character
+  if ($('#name').val() === '') {
+  } else {
+    errorName();
+  }
+});
+
 //checking the email address field while the user is typing
 $('#mail').on('keyup', function() {
   //removing the previous error message of the field
-  $('#mail').prev().remove('.error');
+  $('#mail').next().remove('.error');
   //looking for errors
   errorEmail();
+});
+
+//checking the activities section while the user is clicking
+$('.activities').on('click', function() {
+  //removing the previous error message of the field
+  $('.activities legend').next().remove('.error');
+  errorCorrected($('.activities'));
 });
 
 //checking the credit card number field while the user is typing
 $('#cc-num').on('keyup', function() {
   //removing the previous error message of the field
-  $('#cc-num').prev().remove('.error');
+  $('#cc-num').next().remove('.error');
   //looking for errors
   errorCCNumber();
 });
@@ -312,7 +347,7 @@ $('#cc-num').on('keyup', function() {
 //checking the zip code field while the user is typing
 $('#zip').on('keyup', function() {
   //removing the previous error message of the field
-  $('#zip').prev().remove('.error');
+  $('#zip').next().remove('.error');
   //looking for errors
   errorCCZipCode();
 });
@@ -320,7 +355,7 @@ $('#zip').on('keyup', function() {
 //checking the cvv field while the user is typing
 $('#cvv').on('keyup', function() {
   //removing the previous error message of the field
-  $('#cvv').prev().remove('.error');
+  $('#cvv').next().remove('.error');
   //looking for errors
   errorCCCVV();
 });

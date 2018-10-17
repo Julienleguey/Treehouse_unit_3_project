@@ -193,9 +193,14 @@ button:hover {
   margin: 0 0 8px 0;
   color: red;
   font-style: italic;
+   margin-top: -12px;
+   margin-bottom: 18px;
 }
 
-
+.error-field,
+.error-field:focus {
+  background-color: pink;
+}
 
 
 /* =================================
